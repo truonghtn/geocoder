@@ -3,23 +3,23 @@ import * as bodyParser from 'body-parser';
 import * as moment from 'moment';
 
 import ENV from './glob/env';
-import { io, configureConnections } from './glob/conn';
+import { configureConnections } from './glob/conn';
 import HC from './glob/hc';
 import _ from './utils/_';
 
 import SessionServ from './serv/sess';
-import SocketIOServ from './serv/socketIO';
+// import SocketIOServ from './serv/socketIO';
 
 // Import routers
-import EventRouter from './routes/events';
-import RoomRouter from './routes/rooms';
+import DistrictRouter from './routes/districts';
+// import RoomRouter from './routes/rooms';
 
 class Program {
     public static async main() {
         ENV.configure();
         await configureConnections();
 
-        SocketIOServ.init()
+        // SocketIOServ.init()
 
         const server = express();
         server.use(bodyParser.json());
@@ -45,8 +45,8 @@ class Program {
             next();
         });
 
-        server.use('/events', EventRouter);
-        server.use('/rooms', RoomRouter);
+        server.use('/districts', DistrictRouter);
+        // server.use('/rooms', RoomRouter);
 
         // Start server
         server.listen(ENV.port, function () {

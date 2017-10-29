@@ -9,3 +9,4 @@
 /// <reference path="globals/redis/index.d.ts" />
 /// <reference path="globals/semver/index.d.ts" />
 /// <reference path="globals/serve-static/index.d.ts" />
+/// <reference path="modules/uuid/index.d.ts" />

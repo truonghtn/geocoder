@@ -11,5 +11,8 @@
     "redis": "registry:dt/redis#0.12.1+20160728132028",
     "semver": "registry:dt/semver#5.3.0+20160801120957",
     "serve-static": "registry:dt/serve-static#0.0.0+20160606155157"
+  },
+  "dependencies": {
+    "uuid": "registry:npm/uuid#3.0.1+20161206160008"
   }
 }
