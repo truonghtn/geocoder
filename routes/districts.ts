@@ -29,12 +29,12 @@ interface IGeoObject {
     latitude: number;
     longitude: number;
 }
-router.put('/', _.routeAsync(async (req) => {
-    const lat: number = req.body.lat;
-    const lng: number = req.body.lng;
+router.get('/location/:location', AuthServ.authAPIKey(HC.APIKEY), _.routeAsync(async (req) => {
+    const strLocation: string = req.params.location;
+    const location: string[] = _.split(strLocation, ',');
     const point: ITile38Point = {
-        latitude: lat,
-        longitude: lng
+        latitude: parseFloat(location[1]),
+        longitude: parseFloat(location[0])
     }
     const id: string = await uuid.v4();
     const KEY: string = 'LOCATION';
@@ -67,16 +67,16 @@ router.put('/', _.routeAsync(async (req) => {
     }
 
     return {
-        district: 'Q.CC'
+        district: 'NONE'
     }
 }));
 
-router.post('/', _.routeAsync(async (req) => {
-    const geoJson: IFeature = req.body.geoJson;
-    const key: string = req.body.key;
-    const id: string = req.body.id;
-    const result = await TILE38.set_geoJson(key, id, geoJson);
-    return { result: result };
-}));
+// router.post('/', _.routeAsync(async (req) => {
+//     const geoJson: IFeature = req.body.geoJson;
+//     const key: string = req.body.key;
+//     const id: string = req.body.id;
+//     const result = await TILE38.set_geoJson(key, id, geoJson);
+//     return { result: result };
+// }));
 
 export default router;

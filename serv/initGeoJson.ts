@@ -15,5 +15,4 @@ export async function initGeoJson(pathFile: string) {
             Status: await TILE38.set_geoJson(f.properties.Ten_Tinh, f.properties.Ten_Huyen, f) 
         };
     }));
-    console.log(results);
 }
