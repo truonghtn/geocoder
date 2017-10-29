@@ -117,7 +117,7 @@ class ConnTile38 implements IConnTile38 {
         return new Promise<ITile38Point[]>((resolve, reject) => {
             this.tile38Client.send_command('WITHIN',[key, 'GET', type, name], (err: any, data: any) => {
                 if (err) {
-                    reject(err);
+                    // reject(err);
                 }
                 else {
                     resolve(data[1]);
