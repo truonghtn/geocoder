@@ -13,7 +13,8 @@ import ajv from '../utils/ajv2';
 // Import services here
 import AuthServ from '../serv/auth';
 import { TILE38 } from '../glob/conn';
-import { ITile38Point, IGeoJson, IGeometry } from '../utils/tile38-promisified';
+import { ITile38Point, IFeature, IGeometry } from '../utils/tile38-promisified';
+import { FEATURES } from '../serv/initGeoJson';
 
 const router = express.Router();
 const _ajv = ajv();
@@ -38,38 +39,77 @@ router.put('/', _.routeAsync(async (req) => {
     const id: string = await uuid.v4();
     const KEY: string = 'LOCATION';
     await TILE38.set_point('LOCATION', id, point);
-    const isExpire: boolean = await TILE38.expire(KEY, id, 5);
+    const isExpire: boolean = await TILE38.expire(KEY, id, 10);
     if (!isExpire) {
         throw _.logicError('Could not set point', ``, 500, ERR.UNKNOWN, id); 
     }
-    const CITIES: string = 'HCM_DISTRICT';
-    const listIds: string[] = await TILE38.scan_ids(CITIES);
+    // const CITIY: string = 'TP. Hồ Chí Minh';
+    // const listIds: string[] = await TILE38.scan_ids(CITIY);
 
-    for (let i = 0; i <= listIds.length; i++) {
-        const listPoints: any[] = await TILE38.within_get(KEY, CITIES, listIds[i]);
-        const geoOjects: IGeoObject[] = await Promise.all(listPoints.map(point => {
-            const result: IGeoObject = {
-                key: point[0],
-                latitude: JSON.parse(point[1]).coordinates[1],
-                longitude: JSON.parse(point[1]).coordinates[0]
-            }
-            return result;
-        }));
-        const abc: IGeoObject[] = _.filter(geoOjects, g => g.key == id);
-        if (!_.isEmpty(abc)) {
-            return {
-                district: listIds[i]
+    // for (let i = 0; i <= listIds.length; i++) {
+    //     const listPoints: any[] = await TILE38.within_get(KEY, CITIY, listIds[i]);
+    //     const geoOjects: IGeoObject[] = await Promise.all(listPoints.map(point => {
+    //         const result: IGeoObject = {
+    //             key: point[0],
+    //             latitude: JSON.parse(point[1]).coordinates[1],
+    //             longitude: JSON.parse(point[1]).coordinates[0]
+    //         }
+    //         return result;
+    //     }));
+    //     const abc: IGeoObject[] = _.filter(geoOjects, g => g.key == id);
+    //     if (!_.isEmpty(abc)) {
+    //         return {
+    //             district: listIds[i]
+    //         }
+    //     }
+    // }
+    await Promise.all(FEATURES.map(async f => {
+        const CITIY: string = f.properties.Ten_Tinh;
+        const listIds: string[] = await TILE38.scan_ids(CITIY);
+    
+        for (let i = 0; i <= listIds.length; i++) {
+            const listPoints: any[] = await TILE38.within_get(KEY, CITIY, listIds[i]);
+            const geoOjects: IGeoObject[] = await Promise.all(listPoints.map(point => {
+                const result: IGeoObject = {
+                    key: point[0],
+                    latitude: JSON.parse(point[1]).coordinates[1],
+                    longitude: JSON.parse(point[1]).coordinates[0]
+                }
+                return result;
+            }));
+            const abc: IGeoObject[] = _.filter(geoOjects, g => g.key == id);
+            if (!_.isEmpty(abc)) {
+                return {
+                    district: listIds[i]
+                }
             }
         }
-    }
+        // listIds.forEach(async id => {
+        //     const listPoints: any[] = await TILE38.within_get(KEY, CITIY, id);
+        //     const geoOjects: IGeoObject[] = await Promise.all(listPoints.map(point => {
+        //         const result: IGeoObject = {
+        //             key: point[0],
+        //             latitude: JSON.parse(point[1]).coordinates[1],
+        //             longitude: JSON.parse(point[1]).coordinates[0]
+        //         }
+        //         return result;
+        //     }));
+        //     const abc: IGeoObject[] = _.filter(geoOjects, g => g.key == id);
+        //     if (!_.isEmpty(abc)) {
+        //         return {
+        //             district: id
+        //         }
+        //     }
+        // });
 
+    }));
     return {
         district: 'Q.CC'
     }
 }));
 
 router.post('/', _.routeAsync(async (req) => {
-    const geoJson: IGeoJson = req.body.geoJson;
+    const geoJson: IFeature = req.body.geoJson;
     const key: string = req.body.key;
     const id: string = req.body.id;
     const result = await TILE38.set_geoJson(key, id, geoJson);

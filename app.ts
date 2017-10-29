@@ -12,14 +12,15 @@ import SessionServ from './serv/sess';
 
 // Import routers
 import DistrictRouter from './routes/districts';
+import { initGeoJson } from './serv/initGeoJson';
 // import RoomRouter from './routes/rooms';
 
 class Program {
     public static async main() {
         ENV.configure();
         await configureConnections();
-
-        // SocketIOServ.init()
+        // Init data
+        await initGeoJson('./data_geojson/districts.json');
 
         const server = express();
         server.use(bodyParser.json());
@@ -46,7 +47,6 @@ class Program {
         });
 
         server.use('/districts', DistrictRouter);
-        // server.use('/rooms', RoomRouter);
 
         // Start server
         server.listen(ENV.port, function () {

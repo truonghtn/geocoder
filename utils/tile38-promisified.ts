@@ -9,21 +9,40 @@ export interface ITile38Point {
 export type Tile38GeometryType = 'Polygon';
 export type Tile38GeoJsonType = 'Feature';
 
-export interface IGeometry {
-    type: Tile38GeometryType,
-    coordinates: any
-}
+// export interface IGeometry {
+//     type: Tile38GeometryType,
+//     coordinates: any
+// }
 
-export interface IGeoJson {
-    type: Tile38GeoJsonType,
-    geometry: IGeometry,
-    properties: {
-        OBJECTID: number,
-        f_code: string,
-        Ten_Tinh: string,
-        Ten_Huyen: string,
-        Code_vung: string
-    }
+// export interface IGeoJson {
+//     type: Tile38GeoJsonType,
+//     geometry: IGeometry,
+//     properties: {
+//         OBJECTID: number,
+//         f_code: string,
+//         Ten_Tinh: string,
+//         Ten_Huyen: string,
+//         Code_vung: string
+//     }
+// }
+
+export interface IProperties {
+    OBJECTID: number;
+    f_code: string;
+    Ten_Tinh: string;
+    Ten_Huyen: string;
+    Dan_So: number;
+    Nam_TK: number;
+    Code_vung: string;
+}
+export interface IGeometry {
+    type: Tile38GeometryType;
+    coordinates: any[];
+}
+export interface IFeature {
+    type: Tile38GeoJsonType;
+    properties: IProperties;
+    geometry: IGeometry
 }
 
 export interface IConnTile38Multi {
@@ -31,7 +50,7 @@ export interface IConnTile38Multi {
 }
 export interface IConnTile38 {
     set_point(key: string, id: string, point: ITile38Point): Promise<any>;
-    set_geoJson(type: string, name: string, geoJsonObject: IGeoJson): Promise<any>;
+    set_geoJson(type: string, name: string, geoJsonObject: IFeature): Promise<any>;
     get_point(key: string, id: string): Promise<ITile38Point>;
     within_get(key: string, type: string, name: string): Promise<ITile38Point[]>;
     intersects_get(key: string, id: string, type: string, name: string): Promise<ITile38Point>;
@@ -63,7 +82,7 @@ class ConnTile38 implements IConnTile38 {
         });
     }
 
-    set_geoJson(type: string, name: string, geoJsonObject: IGeoJson): Promise<any> {
+    set_geoJson(type: string, name: string, geoJsonObject: IFeature): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.tile38Client.send_command('set',[type, name, 'OBJECT', JSON.stringify(geoJsonObject.geometry)], (err: any, data: any) => {
                 if (err) {
