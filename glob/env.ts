@@ -6,7 +6,7 @@ export enum ENV_NAME {
 
 class Enviroment {
     env: ENV_NAME = ENV_NAME.DEVELOPMENT;
-    port: number = 3254;
+    port: number = 4532;
     socketIOPort: number = 3255;
     redisHost: string = 'localhost';
     redisPort: number = 6379;
