@@ -17,7 +17,7 @@
     "@types/lodash": "^4.14.67",
     "@types/node": "^8.0.4",
     "@types/socket.io": "^1.4.29",
-    "ajv": "^4.3.1",
+    "ajv": "^6.12.3",
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
     "emailjs": "^1.0.8",
