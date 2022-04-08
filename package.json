@@ -29,7 +29,7 @@
     "lodash": "^4.17.4",
     "md5": "^2.2.1",
     "memory-cache": "^0.1.6",
-    "moment": "^2.14.1",
+    "moment": "^2.29.2",
     "mysql": "^2.11.1",
     "randomstring": "^1.1.5",
     "redis": "^2.6.2",
